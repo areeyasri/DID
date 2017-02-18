@@ -1,4 +1,4 @@
-thsplitlib
+thsplitlibrrr
 ==========
 
 Lib ตัดคำภาษาไทย สำหรับ PHP

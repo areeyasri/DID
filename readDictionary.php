@@ -15,7 +15,7 @@ $result_rudeword = mysqli_query($con,"SELECT * FROM rudedictionary");
 	$j = 0;
 $result_thaiword = mysqli_query($con,"SELECT * FROM thaidictionary");
 	while($row = mysqli_fetch_array($result_thaiword)) {
-		$line_of_text[$j] = $row['thaiword'];
+		$line_of_text[$j] = $row['th_word'];
 		//$dictionary_array_rude[crc32(trim($line_of_text2))] = trim($line_of_text2);
 		$j = $j+1;
 		//echo $row['rude_word'].'|';

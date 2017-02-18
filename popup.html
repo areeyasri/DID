@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+  <script src="process.js"></script>
+  <script src="jquery.min.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+<style>
+
+#logo
+{
+	margin:0px auto;
+	display:block;
+	position: relative;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 30px;
+}
+
+/*small ball*/
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 4px;
+  bottom: 2px;
+  top:2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #28b473;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(18px);
+  transform: translateX(18px);
+}
+
+
+.line {
+	margin-top: 16px;
+    padding-left: 33px;
+}
+
+
+.box {
+	box-sizing: border-box;
+	border-bottom: 2px solid rgba(0,0,0,0.06);
+    margin:5px;
+ 	margin-top: 5px;
+}
+
+.font
+{
+	display: inline-block; 
+	position: relative; 
+	font-family:'Lato';
+	line-height: 30px;
+	font-size:20px;
+
+}
+
+.footer_btn
+{
+	position: relative;
+	display: inline-block;
+	font-size: 15px;
+	text-decoration: none;
+    color:black;
+}
+.footer_btn:hover{
+	color:#5b5b5e;
+	transition: color 0.1s;
+}
+
+.footer{
+	
+	margin:10px;
+	margin-left:20px;
+	padding:5px;
+/*border: 2px solid grey;*/
+}
+</style>
+
+<div style="height:auto; width:325px; padding-top:10px; margin:10px; border: 2px solid grey">
+
+	<img id="logo" src="Logo.png" style ="height:65px; width:65px; ">
+
+		<div class="box" style="padding:10px;">
+			<span class="font"><b>Detection Inappropriate Words</b> For
+			<img src="chrome.png" style=" height:20px; width:20px;  margin-bottom:-3px; vertical-align: baseline;"> Chrome
+			</span>
+		</div>
+
+		<div class="box" style="padding:5px;">
+			<span class="font" style="font-size: 16px; width:100%;">Check For Inapropriate Words
+			<label class="switch" style=" margin:5px 5px 0px 5px; float:right; vertical-align: baseline;">
+	  		<input type="checkbox" name="switch" id="work" >
+			<div class="slider"></div>
+			</label>
+			<br>On
+			<img src="facebook.png" style=" height:25px; width:25px;  margin-bottom:-5px; vertical-align: baseline;"> 
+			 Facebook</span>
+		</div> 
+
+		
+		<div class="footer">
+			<div class="footer_btn" style="margin-right:45px; " id="imgButton" ><img src="document.png" style="height:15px; width:15px; vertical-align: baseline;"> New Document</div>
+			<a onclick="#" class="footer_btn" id="myaccount"><img src="person.png" style="height:15px; width:15px; vertical-align: baseline;"> My Account</a>
+		</div>
+
+
+			<!-- <button id="btnHide"style="display:block-inline;">hide</button>
+			<button id="test">test</button> -->
+		
+	
+
+</div>
+
+</body>
+</html>
+

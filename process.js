@@ -10,7 +10,7 @@ function checkState(e)
           $.post("http://localhost:81/thsplitlib-master/readDictionary.php",{
           },
           function(data,status){
-            console.log(data);
+            //console.log(data);
             $obj = JSON.parse(data);
             //console.log($obj.rudeword);
             //console.log($obj.row);
@@ -18,7 +18,7 @@ function checkState(e)
             var star1= "";
             for(var j=0; j< $obj.thaiword.length; j++){
               star1 = $obj.thaiword[j];
-              //console.log('chrome.tabs.executeScript(null,{code:"document.body.innerHTML = document.body.innerHTML.replace(/'+String(star1.trim())+'/g, '+String(star1.trim())+')"})');
+              chrome.tabs.executeScript(null,{code:"document.body.innerHTML = document.body.innerHTML.replace(/"+String(star1.trim())+"/g, "+String(star1.trim())+")"});
              //console.log('chrome.tabs.executeScript(null,{code:"document.body.innerHTML = document.body.innerHTML.replace(/'+String(star.trim())+'/g,"***")"})');
             }
             for(var i=0; i< $obj.rudeword.length; i++){

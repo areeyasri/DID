@@ -54,13 +54,13 @@ class Segment {
      ///
      ///   ///
      ///      ///
-        /*$result_id_user = mysqli_query($con,"SELECT user_id FROM user WHERE username = '".$_SESSION['username']."'");
+       /* $result_id_user = mysqli_query($con,"SELECT user_id FROM users WHERE username = '".$_SESSION['username']."'");
         $r = mysqli_fetch_array($result_id_user);
         $user_id = $r[0];
 
-		$result_newword = mysqli_query($con,"SELECT * FROM newrudeword where id_user = '".$user_id."' ");
+		$result_newword = mysqli_query($con,"SELECT * FROM newrudeword where user_id = '".$user_id."' ");
 		while($row = mysqli_fetch_array($result_newword)) {
-			$line_of_text3 = $row['new_rude'];
+			$line_of_text3 = $row['newword'];
 			$this->_dictionary_array_new_rude[crc32(trim($line_of_text3))] = trim($line_of_text3);
 			//echo $row['new_rude'].'| ';
 		}*/
@@ -116,7 +116,7 @@ class Segment {
 
 
         // ลบเครื่องหมายคำพูด, ตัวแบ่งประโยค //
-        $this->_input_string = str_replace(array('\'', '‘', '’', '“', '”', '"', '-', '/', '(', ')', '{', '}', '...', '..', '…', '', ',', ':', '|', '\\'), '', $this->_input_string);
+        $this->_input_string = str_replace(array('\'', '‘', '’', '“', '”', '"', '-', '/', '(', ')', '{', '}', '...', '!', '..', '…', '', ',', ':', '|', '\\'), '', $this->_input_string);
         // เปลี่ยน newline ให้กลายเป็น Space เพื่อที่ใช้สำหรับ Trim
         $this->_input_string = str_replace(array("\r", "\r\n", "\n"), ' ', $this->_input_string);
 

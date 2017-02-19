@@ -11,7 +11,7 @@ require_once('connectSQL.php');
         <title>DID - Detection Inappropriate Document</title>
         <script src="jquery.min.js"></script>
         <script src="registerCheck.js"></script>
-        <script src="process.js"></script>
+        <!-- <script src="process.js"></script> -->
     </head>
     <body>
     <style>
@@ -224,13 +224,36 @@ textarea
               ?>
        
            </div>
-		   		<div id="mySidenav" class="sidenav">
-  					<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  					<a href="#">Guide</a>
-  					<a onclick="document.getElementById('id01').style.display='block'">Log In</a>
-  					<a onclick="document.getElementById('id02').style.display='block'">Add a new word</a>
-  					<a href="#">About Us</a>
-				</div>
+           <div id="mySidenav" class="sidenav">
+           <?php
+           if(isset($_SESSION['username'])){
+            if($_SESSION["group"] == 'user'){
+               echo 
+           "<a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>
+            <a href=\"#\">Guide</a>
+            <a onclick=\"document.getElementById('id01').style.display='block'\">Account</a>
+            <a onclick=\"document.getElementById('id02').style.display='block'\">Add a new word</a>
+            <a href=\"#\">About Us</a>\"";
+
+          }
+          else if($_SESSION["group"] == 'admin'){
+              echo 
+           "<a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>
+            <a href=\"#\">Guide</a>
+            <a onclick=\"document.getElementById('id02').style.display='block'\">Add a new word</a>
+            <a href=\"#\">About Us</a>\"";
+          }
+        }
+          else{
+              echo 
+           "<a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>
+            <a href=\"#\">Guide</a>
+            <a onclick=\"document.getElementById('id01').style.display='block'\">log In</a>
+            <a href=\"#\">About Us</a>\"";
+          }
+        
+        ?>
+        </div>     
 
 							<div id="id01" class="modal">
 								  <form class="modal-content animate" action="head.php" method="post" >
@@ -255,7 +278,7 @@ textarea
 		     							  			</div>
    										</div>
    										<hr style="margin:10px 10px 10px 10px;">										 
-   										<center style="margin:15px;"><label>Not A Member Yet  </label><a href="#" onclick="openRegis()" style="font-color:blue;" >Join Now</a></center>
+   										<center style="margin:15px;"><label>Not A Member Yet  </label><a href="#" onclick="openRegis()" style="font-color:blue;" id="regis">Join Now</a></center>
 
   								</form>
 							</div>
@@ -275,21 +298,23 @@ textarea
  							  				<div class="container">
 		 	   										 <label><b>Full name</b></label>
 		 	   										 <div style="display:inline-block; width:100%;">
-				     										 <input style=" width:45%; margin-right:1%;" type="text" placeholder="Enter First Name" name="fname" id="fname" required="required">
-                                 <input style="float:right; width:54%;" type="text" placeholder="Enter Last Name" name="lname" id="lname" required="required">
+				     										 <input style=" width:45%; margin-right:1%;" type="text" placeholder="Enter First Name" name="fname" id="fname" onkeyup="checkFirstname(fname)" required>
+                                 <input style="float:right; width:54%;" type="text" placeholder="Enter Last Name" name="lname" id="lname" onkeyup="checkLastname(lname)" required>
                                  <span id="fnameER"></span><br>
                                  <span id="lnameER"></span><br>
 				     								 </div>
 				    							 			 <label><b>Username</b></label>
-															 <input type="text" placeholder="Enter Username" name="username" id="username" onkeyup="checkUsername(username)" required="required">
+															 <input type="text" placeholder="Enter Username" name="username" id="username" onkeyup="checkUsername(username)" required>
                                <span id="usernameER"></span><br>
 															 <label><b>Email</b></label>
-				     										 <input type="email" placeholder="Enter Email" name="email" id="email" required="required">
-                                 <span id="usernameER"></span><br>
+				     										 <input type="email" placeholder="Enter Email" name="email" id="email" onkeyup="checkEmail(email)" required>
+                                 <span id="emailER"></span><br>
 				     										 <label><b>Password</b></label>
-				     										 <input type="password" placeholder="Enter Password" name="password" id="password" required="required">
+				     										 <input type="password" placeholder="Enter Password" name="password" id="password" onkeyup="checkPassword(password)" required>
+                                 <span id="passwordER"></span><br>
 				     										 <label><b>Confirm Password</b></label>
-				     										 <input type="password" placeholder="Enter Confirm-Password" name="conpassword" id="conpassword" required="required">
+				     										 <input type="password" placeholder="Enter Confirm-Password" name="conpassword" id="conpassword" onkeyup="checkConpassword(conpassword)" required>
+                                 <span id="conpasswordER"></span><br>
 				        									 <button type="button" id="subReg">Register</button>
 															 <!-- <input class="animated" type="submit" value="Register"> -->
 		        									 
@@ -304,12 +329,12 @@ textarea
 								<div class="imgcontainer" >
 									<div style="display:inline-block; width:100%;">
 		    							<h3>ADD NEW RUDE WORD</h3>
-										<span onclick="document.getElementById('new').style.display='none'" class="close" title="Close Modal">&times;</span>    		 		
+										<span onclick="document.getElementById('new').style.display='none'" class="close" title="Close Modal">&times;</span>    		 		 
 									</div> 		
   								</div>
 								<div class="container">
 									<label><b>NEW RUDE WORD</b></label>
-									<input id="rudeword" name="rudeword" type="text" placeholder="Rude Word" required="required" >
+									<input id="rudeword" name="rudeword" type="text" placeholder="Rude Word" required >
 									<button type="submit" >OK</button>
    								</div>	
   							</form>
@@ -319,7 +344,7 @@ textarea
 
 			<!-- <button class="submit" onclick="myFunction()" style="float:right; font-size:20px;">ADD NEW WORDS</button> -->
   			<!-- END OF BANNER -->
-
+      
 				  	<div id="main">
 
 							<table id="tarea" align="center" style="border:1px solid black; width:95%; height: 100%; padding-right:15px; border-spacing:5px; border-collapse: separate;">
@@ -385,6 +410,7 @@ function closeNav() {
 function openRegis(){
 document.getElementById('new').style.display='initial';
 document.getElementById('id01').style.display='none';
+document.getElementById('subReg').style.display='none';
 }
 
 // Get the modal
@@ -413,6 +439,164 @@ window.onclick = function(event) {
     })();
 
   
+}
+function checkUsername(inputX){
+  var inputX = document.getElementById("username");
+  //console.log(inputX);
+  //var test = inputX.value;
+  if(inputX.value.length <= 0){
+    //alert("Cannot leave it as blank.");
+    document.getElementById("usernameER").innerHTML = "Can't leave it as blank";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none'; 
+  }
+  if (inputX.value.length <4 || inputX.value.length >= 10) {
+    document.getElementById("usernameER").innerHTML = "(4-10 Characters)";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none'; 
+  }
+  else {
+    document.getElementById('subReg').style.display = 'block';
+    document.getElementById("usernameER").innerHTML = "";
+    inputX.style.backgroundColor="#FFF5A1";
+  }
+}
+
+function checkFirstname(inputX){
+  var inputX = document.getElementById("fname");
+  var word =  /^[A-Za-z]+$/;
+  var test = inputX.value;
+  if(test.length <= 0){
+    //alert("Cannot leave it as blank.");
+    document.getElementById("fnameER").innerHTML = "Can't leave firstname as blank";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none';
+  }
+  else if(test.length <3 || test.length >= 20) {
+    if(inputX.value.match(word)){
+      document.getElementById("fnameER").innerHTML = "(4-20 Characters)";
+      inputX.style.background="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+    else{
+      document.getElementById("fnameER").innerHTML = "Alphabet only!!";
+      inputX.style.background="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+  }
+  else if(test.length >3 || test.length <=20 ){
+    if(inputX.value.match(word)){
+      document.getElementById("fnameER").innerHTML = "";
+      inputX.style.background="#FFF5A1";  
+      document.getElementById('subReg').style.display = 'block';
+    }
+    else{
+      document.getElementById("fnameER").innerHTML = "Alphabet only!!";
+      inputX.style.background="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+  }
+}
+
+function checkLastname(inputX){
+  var inputX = document.getElementById("lname");
+  var word =  /^[A-Za-z]+$/;
+  var test = inputX.value;
+  if(test.length <= 0){
+    //alert("Cannot leave it as blank.");
+    document.getElementById("lnameER").innerHTML = "Can't leave lastname as blank";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none';
+  }
+  else if(test.length <3 || test.length >= 20) {
+    if(inputX.value.match(word)){
+      document.getElementById("lnameER").innerHTML = "(4-20 Characters)";
+      inputX.style.background="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+    else{
+      document.getElementById("lnameER").innerHTML = "Alphabet only!!";
+      inputX.style.background="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+  }
+  else if(test.length >3 || test.length <=20 ){
+    if(inputX.value.match(word)){
+      document.getElementById("lnameER").innerHTML = "";
+      inputX.style.background="#FFF5A1";  
+      document.getElementById('subReg').style.display = 'block';
+    }
+    else{
+      document.getElementById("lnameER").innerHTML = "Alphabet only!!";
+      inputX.style.background="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+  }
+}
+
+function checkPassword(inputX){
+  var inputX = document.getElementById("password");
+  if(inputX.value.length<=0){
+    //alert("Cannot leave it as blank.");
+    document.getElementById("passwordER").innerHTML = "Can't leave it as blank";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none';
+  }
+  else if (inputX.value.length <3 || inputX.value.length >= 10) {
+    document.getElementById("passwordER").innerHTML = "(4-10 Characters)";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none';
+  }
+  else {
+    document.getElementById("passwordER").innerHTML = "";
+    inputX.style.backgroundColor="#FFF5A1";
+    document.getElementById('subReg').style.display = 'block';
+  }
+}
+function checkConpassword(inputX){
+  var inputX = document.getElementById("conpassword");
+  if(inputX.value.length<=0){
+    //alert("Cannot leave it as blank.");
+    document.getElementById("conpasswordER").innerHTML = "Can't leave it as blank";
+    inputX.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none';
+  }
+  else{
+    if ((document.getElementById("password").value)!=(document.getElementById("conpassword").value)) {
+      document.getElementById("conpasswordER").innerHTML = "(incorrect!)";
+      inputX.style.backgroundColor="red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+    else {
+      inputX.style.backgroundColor="#FFF5A1";
+      document.getElementById("conpasswordER").innerHTML = "";
+      document.getElementById('subReg').style.display = 'block';
+    }
+  }
+}
+
+function checkEmail(inputE){
+  var inputX = document.getElementById("email");
+  var add = inputE.value.indexOf("@");
+  var point = inputE.value.lastIndexOf(".");
+  if(inputE.value.length<=0){
+    //alert("Cannot leave it as blank.");
+    document.getElementById("emailER").innerHTML = "Can't leave it as blank";
+    inputE.style.backgroundColor="red";
+    document.getElementById('subReg').style.display = 'none';
+  }
+  else if(add<1 || point<(add+2)){
+    if(inputE.value.length > 0){
+      document.getElementById("emailER").innerHTML = "(INVALID EMAIL!)";
+      inputE.style.backgroundColor = "red";
+      document.getElementById('subReg').style.display = 'none';
+    }
+  }
+  else {
+    inputE.style.backgroundColor = "#FFF5A1";
+    document.getElementById("emailER").innerHTML = "";
+    document.getElementById('subReg').style.display = 'block';
+  }
 }
 $(document).ready(function(){
   $("#full").hide();
@@ -454,7 +638,7 @@ $(document).ready(function(){
     });
 
   $("#subReg").click(function(){
-    console.log('sasa');
+ 
     $.post("checkRegister.php",{
       username: $('#username').val(),
       fname: $('#fname').val(),
@@ -466,14 +650,41 @@ $(document).ready(function(){
     function(data,status){
       //console.log(data);
       $obj = JSON.parse(data);
-      console.log($obj.dubUsername);
+      console.log($obj);
+      
       if($obj.dubUsername == 1){
         //console.log("dub");
         alert("Username already exists!!");
+        document.getElementById("usernameER").innerHTML = "Username already exists!!";
+        document.getElementById("username").style.backgroundColor="red";
+        document.getElementById('subReg').style.display = 'none';
       }
-      else if($obj.dubUsername == 0){
+      if($obj.OK == false){
+        //alert("Please Input All Box!!!");
+        document.getElementById('subReg').style.display = 'none';
+      }
+      
+        if($obj.error[0] == 1){
+          alert("username");
+        }
+        if($obj.error[1] == 1){
+          alert("fname");
+        }
+        if($obj.error[2] == 1){
+          alert("lname");
+        }
+        if($obj.error[3] == 1){
+          alert("password");
+        }
+        if($obj.error[4] == 1){
+          alert("Confirm-Password");
+        }
+        if($obj.error[5] == 1){
+          alert("email");
+        }
+      else if($obj.dubUsername== 0 && $obj.OK == true) {
         alert('Register Successfully!!');
-        window.location = 'home.html';
+        window.location = 'home.php';
       }
     });
   });

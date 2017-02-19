@@ -16,29 +16,29 @@
 		}
 		if (!$isOK) {
 			// not success go to login again
-			echo "<br>Please go back to <a href='home.html'>Login page</a> and try again";	
+			echo "<br>Please go back to <a href='home.php'>Login page</a> and try again";	
 			exit();
 		} else {
 			// user correct?
-			$strSQL = "SELECT username FROM user WHERE username = '".trim($_POST['username'])."' ";
+			$strSQL = "SELECT username FROM users WHERE username = '".trim($_POST['username'])."' ";
 			$result = mysqli_query($con,$strSQL);
 			if (mysqli_fetch_array($result)) {
 				// password correct?
-				$strSQL = "SELECT password,usergroup FROM user WHERE username = '".trim($_POST['username'])."' ";
+				$strSQL = "SELECT password,usergroup FROM users WHERE username = '".trim($_POST['username'])."' ";
 				$result = mysqli_query($con,$strSQL);
 				$row = mysqli_fetch_array($result);
 				if ($row) {
 					if ($row['password'] == trim($_POST["password"])) {
 						//set session that login success
 						$_SESSION["username"] = $_POST['username'];
-						$_SESSION["password"] = $_POST['password'];
+						//$_SESSION["password"] = $_POST['password'];
 						//echo $row['usergroup']."asdasddas";
 						if($row['usergroup'] == 'admin')
 							$_SESSION["group"] = 'admin';
 						else
 							$_SESSION["group"] = 'user';
 						
-						header("location:home.html");
+						header("location:home.php");
 					} else {
 						$isOK = false;
 					}
@@ -48,15 +48,15 @@
 			}
 			if (!$isOK) {
 				// if username or password incorrect go back login
-				echo "<br>Email or Password is incorrect.<br>Please go back to <a href='home.html'>Login page</a> and try again";	
+				echo "<br>Email or Password is incorrect.<br>Please go back to <a href='home.php'>Login page</a> and try again";	
 				exit();
 			}
 		}
 		mysqli_close($con);
 	} else {
 		if (!isset($_SESSION["username"])) {
-			header("location:home.html");
-			exit();
+			header("location:home.php");
+			//exit();
 		}
 	}
 

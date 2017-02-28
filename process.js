@@ -5,9 +5,6 @@ function checkState(e)
      
      if (chkBox.checked)
      {
-        // chrome.tabs.executeScript(null,{code:"document.body.style.backgroundColor='red'"});
-          //console.log('check');
-          //document.getElementById('work').setAttribute('readonly', true);
           chrome.tabs.executeScript(null,{code:"var x = document.body.innerText; x"},
                  function(results){
                   //console.log(results);

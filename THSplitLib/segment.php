@@ -1,4 +1,8 @@
 <?php
+    if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 /**
  * Title: Thai Splitter Lib
  * Author: Suwicha Phuak-im
@@ -9,10 +13,10 @@ class Segment {
 
     private $_input_string;
     private $_dictionary_array = array();
-    private $_dictionary_array2 = array();
     private $_thcharacter_obj;
     private $_unicode_obj;
     private $_segmented_result = array();
+    private $array_rude_word = array();
       
     function __construct() {
         if (!class_exists('Thchracter')) {
@@ -22,64 +26,50 @@ class Segment {
 		if (!class_exists('Unicode')) {
         include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'unicode.php');
 		}
-
-
-        /*$file_handle = fopen(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'dictionary' . DIRECTORY_SEPARATOR . 'dictionary.txt', "rb");
-        while (!feof($file_handle)) {
-            $line_of_text = fgets($file_handle);
-            $this->_dictionary_array[crc32(trim($line_of_text))] = trim($line_of_text);
-        }
-        fclose($file_handle);*/
-        
-
 		
 		$con = mysqli_connect("127.0.0.1:3306","root","");
 		mysqli_select_db($con,"database_web");
         mysqli_set_charset($con, "utf8");
-		$result_thaiword = mysqli_query($con,"SELECT * FROM thaidictionary");
+		$result_thaiword = mysqli_query($con,"SELECT * FROM dictionary");
 		while($row = mysqli_fetch_array($result_thaiword)) {
 			$line_of_text = $row['th_word'];
 			$this->_dictionary_array[crc32(trim($line_of_text))] = trim($line_of_text);
-			//echo $row['th_word'].'|';
 		}
 		//read rude word main from database
+        
 		$result_rudeword = mysqli_query($con,"SELECT * FROM rudedictionary");
 		while($row = mysqli_fetch_array($result_rudeword)) {
 			$line_of_text2 = $row['rudeword'];
 			$this->_dictionary_array_rude[crc32(trim($line_of_text2))] = trim($line_of_text2);
-			//echo $row['rude_word'].'|';
 		}
-       
-		////
-     ///
-     ///   ///
-     ///      ///
-       /* $result_id_user = mysqli_query($con,"SELECT user_id FROM users WHERE username = '".$_SESSION['username']."'");
-        $r = mysqli_fetch_array($result_id_user);
-        $user_id = $r[0];
 
-		$result_newword = mysqli_query($con,"SELECT * FROM newrudeword where user_id = '".$user_id."' ");
-		while($row = mysqli_fetch_array($result_newword)) {
-			$line_of_text3 = $row['newword'];
-			$this->_dictionary_array_new_rude[crc32(trim($line_of_text3))] = trim($line_of_text3);
-			//echo $row['new_rude'].'| ';
-		}*/
-		
-		//$eachword = '';
-		//foreach($this->_dictionary_array as $eachword){
-		//	echo $eachword.' | ';
-		//}
-		
-		/*$file_handle2 = fopen(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'dictionary' . DIRECTORY_SEPARATOR . 'dictionary_rude.txt', "rb");
-        while (!feof($file_handle2)) {
-            $line_of_text2 = fgets($file_handle2);
-            $this->_dictionary_array_rude[crc32(trim($line_of_text2))] = trim($line_of_text2);
+        if(!isset($_SESSION['user_id'])){
+            $this->array_rude_word = $this->_dictionary_array_rude;
         }
-        fclose($file_handle2);*/
+        else {
+            $con1 = mysqli_connect("127.0.0.1:3306","root","");
+            mysqli_select_db($con1,"database_web");
+            mysqli_set_charset($con1, "tis-620");
+        	$result_newword = mysqli_query($con1,"SELECT * FROM newrudeword where user_id = '".$_SESSION['user_id']."' ");
+
+            //$result_newword = mysqli_query($con,"SELECT * FROM newrudeword where user_id = '2' ");
+            while($row = mysqli_fetch_array($result_newword)) {
+            	$line_of_text3 = $row['newword'];
+            	$this->_dictionary_array_new_rude[crc32(trim($line_of_text3))] = trim($line_of_text3);
+            }
+            $this->array_rude_word = array_merge($this->_dictionary_array_rude,$this->_dictionary_array_new_rude);
+        }
+       
+		
 
         // Load Helper Class/
         $this->_unicode_obj = new Unicode();
         $this->_thcharacter_obj = new Thchracter();
+    }
+
+    public function FunctionName()
+    {
+        return $this->array_rude_word = array_merge($this->_dictionary_array_rude,$this->_dictionary_array_new_rude);
     }
 
     private function clear_duplicated($string) {
@@ -116,7 +106,7 @@ class Segment {
 
 
         // ลบเครื่องหมายคำพูด, ตัวแบ่งประโยค //
-        $this->_input_string = str_replace(array('\'', '‘', '’', '“', '”', '"', '-', '/', '(', ')', '{', '}', '...', '!', '..', '…', '', ',', ':', '|', '\\'), '', $this->_input_string);
+        $this->_input_string = str_replace(array('\'', '‘', '’', '“', '”', '"', '-', '/','.', '(', ')', '{', '}', '...', '!', '..', '…', '', ',', ':', '|', '\\'), '', $this->_input_string);
         // เปลี่ยน newline ให้กลายเป็น Space เพื่อที่ใช้สำหรับ Trim
         $this->_input_string = str_replace(array("\r", "\r\n", "\n"), ' ', $this->_input_string);
 
@@ -124,14 +114,13 @@ class Segment {
         // กำจัดซ้ำ //
         $this->_input_string = $this->clear_duplicated($this->_input_string);
 
-
         // แยกประโยคจากช่องว่าง (~เผื่อไว้สำหรับภาษาอังกฤษ) //
         $this->_input_string_exploded = explode(' ', $this->_input_string);
 
        // Reverse Array สำหรับการใช้ Dictionary แบบ Reverse //
         foreach ($this->_input_string_exploded as $input_string_exploded_row) {
             $current_string_reverse_array = array_reverse($this->_unicode_obj->uni_strsplit(trim($input_string_exploded_row)));
-
+            
             $current_array_result = $this->_segment_by_dictionary_reverse($current_string_reverse_array);
             foreach ($current_array_result as $each_result) {
                 if (trim($each_result) != '')
@@ -145,14 +134,17 @@ class Segment {
             if (mb_strlen($result_row) > 10) {
 
                 $current_string_array = $this->_unicode_obj->uni_strsplit(trim($result_row));
+
                 $current_array_result = $this->_segment_by_dictionary($current_string_array);
 
                 foreach ($current_array_result as $current_result_row) {
+
                     $tmp_result[] = trim($current_result_row);
                 }
             } else {
                 $tmp_result[] = $result_row;
             }
+
         }
         $this->_segmented_result = $tmp_result;
         return $this->_segmented_result;
@@ -295,12 +287,12 @@ class Segment {
 		//echo implode(' ', $input_array);
 		$eachinput = '';
 		$found = 0;
-		$result_rude = array_fill( 0, count($this->_dictionary_array_rude), null);
+		$result_rude = array_fill( 0, count($this->array_rude_word), null);
 		
 		foreach ($input_array as $eachinput){
 			$checkrude = 0;
 			$i = 0;
-			foreach ($this->_dictionary_array_rude as $eachrude){
+			foreach ($this->array_rude_word as $eachrude){
 				if(strcmp( $eachinput,$eachrude) == 0){
 					$result_rude[$i] = 1;
 					$checkrude = 1;
@@ -324,7 +316,7 @@ class Segment {
 		else if($found==1){
 			$i = 0;
 			$runner = 0;
-			foreach($this->_dictionary_array_rude as $eachrude){
+			foreach($this->array_rude_word as $eachrude){
 				if($result_rude[$runner] == 1)
 					$i = $i +1;
 				$runner = $runner+1;	
@@ -334,7 +326,7 @@ class Segment {
 				
 			$i = 0;
             $j=0;
-			foreach($this->_dictionary_array_rude as $eachrude){
+			foreach($this->array_rude_word as $eachrude){
 				
 				if($i<count($result_rude) && $result_rude[$i] == 1)
 				{

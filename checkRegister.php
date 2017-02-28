@@ -3,7 +3,7 @@
 	require_once("connectSQL.php");
 
 	$dubUser = 0;
-	$array =array(0,0,0,0,0,0); 
+	$array =array(0,0,0,0,0,0,0); 
 	$isOK = true;
 
 	if(trim($_POST["username"]) == "") {
@@ -35,6 +35,11 @@
 		//echo "Password not Match!<br>";
 		$array[5] = 1;
 		$isOK = false;
+	}
+	if($_POST["password"] != $_POST["conpassword"]) {
+		//echo "Password not Match!<br>";
+		$array[6] = 1;
+		$isOK = false;
 	}	
 
 		$strSQL = "SELECT * FROM users WHERE username = '".trim($_POST['username'])."' ";
@@ -47,7 +52,7 @@
 		$mArray  = array('dubUsername' => $dubUser, 'OK' => $isOK, 'error' => $array);
 	    echo json_encode($mArray,JSON_UNESCAPED_UNICODE );
 		}
-		else if($dubUser ==0 && $isOK == true){
+		else if($dubUser == 0 && $isOK == true){
 			$strSQL = "INSERT INTO users (username,password,fname,lname,email,usergroup) VALUES (".
 				"'".$_POST["username"]."',".
 				"'".$_POST["password"]."',".

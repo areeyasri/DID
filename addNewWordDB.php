@@ -1,6 +1,7 @@
 <?php
 	session_start();
 	require_once("connectSQL.php");
+	mysqli_set_charset($con, "utf8");
 	
 	$con = mysqli_connect("127.0.0.1:3306","root","");
 	mysqli_select_db($con,"database_web");
@@ -13,6 +14,6 @@
 	mysqli_query($con,"INSERT INTO newrudeword VALUES('".$id."','".$_POST['rudeword']."','".$user_id."')");
 	echo "Add NEW RUDE WORD Completed!<br>";		
 	//echo "<br>Please go to <a href='home.html'>Home page</a>";
-	header("location:home.php");
+	header("location:index.php");
 	mysqli_close($con);
 ?>

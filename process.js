@@ -1,14 +1,15 @@
 
 function checkState(e)
 {
-     var chkBox = document.getElementById('work');
-     
-     if (chkBox.checked)
-     {
+   var chkBox = document.getElementById('work');
+   var init;
+
+     if (chkBox.checked || status=="ON")
+     {  
+          localStorage.setItem("STATUS-SWITCH", "ON");
+
           chrome.tabs.executeScript(null,{code:"var x = document.body.innerText; x"},
                  function(results){
-                  //console.log(results);
-                  
                   $.post("http://localhost:81/DID-master/run.php",{
                     text_to_segment: results[0]
                   },
@@ -18,8 +19,7 @@ function checkState(e)
                     if($obj.rudeword == "NOT FOUND"){
                       console.log("NOT FOUND");
                     }
-                    //var wordrude = $obj.rude_word;
-                    //console.log($obj.rudeword);
+                    
                     else {
                       var star ="";
                       for(var i=0; i< $obj.rudeword.length; i++){
@@ -33,6 +33,7 @@ function checkState(e)
             );
         }
      else {
+          localStorage.removeItem("STATUS-SWITCH");
         //document.getElementById('inputId').removeAttribute('readonly');
         chrome.tabs.executeScript(null,{code:"location.reload()"});
      }
@@ -47,13 +48,25 @@ document.addEventListener('DOMContentLoaded', function () {
   var divs = document.querySelectorAll('input'); 
   var myInput = document.getElementById('imgButton');
 
+   var chkBox = document.getElementById('work');
   for (var i = 0; i < divs.length; i++) {
-    divs[i].addEventListener('click',checkState);
+         var state = localStorage.getItem("STATUS-SWITCH");
+         if(state == "ON"){
+               chkBox.checked = true;
+               window.addEventListener('load',checkState);
+               divs[i].addEventListener('onload',checkState);
+               divs[i].addEventListener('click',checkState);
+               chrome.contentSettings.plugins
+         }else{
+               divs[i].addEventListener('click',checkState);
+               window.addEventListener('load',checkState);
+         }
+     
   }
 
   myInput.addEventListener('click',checkState2);
 
-});
+}, true);
 
 function goToInbox() {
   console.log('Going to inbox...');

@@ -4,7 +4,7 @@ require_once('connectSQL.php');
 mysqli_set_charset($con, "utf8");
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html id="language" lang="th_utf8">
 
 <head>
 
@@ -105,7 +105,11 @@ span.psw {
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
-                <a class="navbar-brand hidden-xs" href="index.php">DETECTIVE INAPPROPRIATE WORDS</a>
+                <a class="navbar-brand hidden-xs" href="index.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
+                <select id="selectLang" style="margin-left: 555px; margin-top: 15px;">
+                    <option value="1" selected="selected">English (en)</option>
+                    <option value="2">Thai (th)</option>
+                </select>
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -218,7 +222,7 @@ span.psw {
                         <a href="forms.html"><i class="fglyphicon glyphicon-user"></i> MyAccount</a>
                     </li> -->
                     <li>
-                        <a href="aboutus.php"><i class="glyphicon glyphicon-cog"></i> About us</a>
+                        <a href="aboutus.php"><i class="glyphicon glyphicon-cog"></i> About DID</a>
                     </li>
                 </ul>
             </div>
@@ -294,10 +298,11 @@ span.psw {
 
 <div id="id02" class="modal" style="background-color: rgba(0,0,0,0);">
     <form class="modal-content animate" action="addNewWordDB.php" style="width:45%; margin-left:225px; margin-top:100px;" method="post" style="background-color: #fefefe; margin: 15% auto 15% auto; border: 1px solid #888; padding: 1%; width: 40%;">
+
         <div class="imgcontainer" style="text-align: center; margin: 24px 0 12px 0; position: relative;">
-            <div style="display:inline-block; width:100%; height: 60px;">
+            <div style="width:100%;">
                 <h3>ADD NEW RUDE WORD</h3>
-                <span onclick="document.getElementById('id02').style.display='none'" style="margin-right:15px;width:50px; " class="close" title="Close Modal">&times;</span>                    
+                 <span onclick="document.getElementById('id02').style.display='none'" style="margin-top: -50px;margin-right:15px;width:50px; " class="close" title="Close Modal">&times;</span>                   
             </div>      
         </div>
         <div class="container" style="padding: 16px; margin-left: 50px;">
@@ -315,7 +320,7 @@ span.psw {
                  <div id="page-wrapper" style="height: 750px;">
 
                     <div class="col-xs-12">
-                        <h3 style="margin:10px;">ตรวจสอบคำหยาบ</h3>
+                        <h3 style="margin:10px;">Detect Impolite Document</h3>
                         <div class="panel panel-default"  style="background: none;">
                             <div class="panel-body">
                                 <!-- <form method="post"> -->
@@ -346,11 +351,11 @@ span.psw {
                                     ?>
                                     
                                     <div class="col-xs-12 col-md-6 col-lg-6" id="box" style="float:right; min-height:343px; border: solid gray 1px; background-color:#E6E6E6; padding:5px;">
-                                        <p id="one" style="font-weight: bold; font-size: 16px;">ประโยค:  </p><p id="full"></p></br>
-                                        <p id="two">คำหยาบ:  </p><p id="rude"></p></br>
-                                        <p id="three">คำผิด:  </p><p id="wrong"></p><br>
-                                        <p id="four">เวลา:  </p> <p id="time"></p><br>
-                                        <p id="five">อัตราส่วนคำหยาบ: </p>
+                                        <p id="one" style="font-weight: bold; font-size: 16px;">Context:  </p><p id="full"></p></br>
+                                        <p id="two">Inappropriate:  </p><p id="rude"></p></br>
+                                        <!-- <p id="three">คำผิด:  </p><p id="wrong"></p><br>-->
+                                        <p id="four">Time:  </p> <p id="time"></p><br>
+                                        <p id="five">Percentage of inappropriate words in the document: </p>
                                         <div class="progress">
                                           
                                           <div id="barPro" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
@@ -382,10 +387,16 @@ span.psw {
     <!-- /#wrapper -->
 
     <script>
+    $("#selectLang").change(function(){
+        if($(this).val() == '1')
+            window.location = 'index.php';
+        else if($(this).val() == '2')
+            window.location = 'index_th.php';
+    });
         $(document).ready(function(){
             $("#one").hide();
             $("#two").hide();
-            $("#three").hide();
+            //$("#three").hide();
             $("#four").hide();
             $("#five").hide();
             $(".progress").hide();
@@ -404,7 +415,7 @@ span.psw {
                         //window.location.reload();
                     }
                     else if($obj.incorrect == 0) {
-                        alert("Login Successfully.");
+                        //alert("Login Successfully.");
                         //window.location.reload();
                         window.location = 'index.php';
                     }
@@ -442,10 +453,19 @@ span.psw {
                       for(var j = 0; j<$obj.rudeword.length; j++) {
                         if($obj.full_text[i] == $obj.rudeword[j]){
                           found = 1;
+                          $.post("usedWordDB.php",
+                          {
+                            usedRude: $obj.rudeword[j]
+                          },
+                          function(data,status){
+                            console.log(data);
+                            $obj = JSON.parse(data);
+
+                          });
                         }
                       }
                       if (found == 1){
-                        tmp = tmp + " |" + "***";
+                        tmp = tmp + "|" + "***";
                          found=0;
                          count++;
                       }
@@ -478,8 +498,8 @@ span.psw {
                    $("#full").text(tmp);
                    $("#two").show();
                    $("#rude").text($obj.rudeword);
-                   $("#three").show();
-                   $("#wrong").text($obj.wrongword);
+                   //$("#three").show();
+                   //$("#wrong").text($obj.wrongword);
                    $("#four").show();
                    $("#time").text($obj.time);
                 });
@@ -559,12 +579,11 @@ span.psw {
                         //document.getElementById('subReg').style.display = 'none';
                     }
                   else if($obj.dubUsername== 0 && $obj.OK == true) {
-                    alert('Register Successfully!!');
+                    //alert('Register Successfully!!');
                     window.location = 'index.php';
                   }
                 });
               });
-
         });
 
 

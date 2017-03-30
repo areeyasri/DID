@@ -49,15 +49,19 @@ class Segment {
         else {
             $con1 = mysqli_connect("127.0.0.1:3306","root","");
             mysqli_select_db($con1,"database_web");
-            mysqli_set_charset($con1, "tis-620");
+            mysqli_set_charset($con1, "");
         	$result_newword = mysqli_query($con1,"SELECT * FROM newrudeword where user_id = '".$_SESSION['user_id']."' ");
-
             //$result_newword = mysqli_query($con,"SELECT * FROM newrudeword where user_id = '2' ");
             while($row = mysqli_fetch_array($result_newword)) {
-            	$line_of_text3 = $row['newword'];
-            	$this->_dictionary_array_new_rude[crc32(trim($line_of_text3))] = trim($line_of_text3);
+                $line_of_text3 = $row['newword'];
+                $this->_dictionary_array_new_rude[crc32(trim($line_of_text3))] = trim($line_of_text3);
             }
-            $this->array_rude_word = array_merge($this->_dictionary_array_rude,$this->_dictionary_array_new_rude);
+            if(!isset($this->_dictionary_array_new_rude)){
+                $this->array_rude_word = $this->_dictionary_array_rude;
+            }
+            else{
+                $this->array_rude_word = array_merge($this->_dictionary_array_rude,$this->_dictionary_array_new_rude);
+            }
         }
        
 		
@@ -65,11 +69,6 @@ class Segment {
         // Load Helper Class/
         $this->_unicode_obj = new Unicode();
         $this->_thcharacter_obj = new Thchracter();
-    }
-
-    public function FunctionName()
-    {
-        return $this->array_rude_word = array_merge($this->_dictionary_array_rude,$this->_dictionary_array_new_rude);
     }
 
     private function clear_duplicated($string) {
@@ -340,8 +339,5 @@ class Segment {
 
 
 	}
-
-
-  
 }
 ?>

@@ -3,7 +3,7 @@
   "description": "DID is a website and chrome extension that used to detect Thai inapropriate words in your Facebook post",
   "version": "1.0",
   "permissions": [
-    "tabs", "http://*/*", "https://*/*"
+    "tabs", "http://*/*", "https://*/*", "contentSettings"
   ],
   "background": {
     "scripts": ["process.js"],
@@ -16,9 +16,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://www.google.com/*"],
+      "matches": ["http://*/*", "https://*/*"],
       "css": [],
-      "js": ["content.js"]
+      "js": ["process.js"],
+      "run_at":    "document_end"
     }
   ],
   "manifest_version": 2

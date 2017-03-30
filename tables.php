@@ -7,7 +7,7 @@
 
     $con = mysqli_connect($serverName,$userName,$userPassword,$dbName) or die("Database Connect Failed : " . mysqli_connect_error());
     //require_once('connectSQL.php');
-    mysqli_set_charset($con, "tis-620");
+    mysqli_set_charset($con, "utf8");
     if(!($_SESSION["group"] == "admin")) 
     {
         header("location:index.php");
@@ -130,17 +130,17 @@ span.psw {
                             else if($_SESSION["group"] == 'admin'){
                                 echo "<ul class=\"dropdown-menu\">
                                     <li>
-                                        <a href=\"#\"><i class=\"fa fa-fw fa-user\"></i> Profile</a>
+                                        <a href=\"#\"><span class=\"fa fa-fw fa-user\"></span> Profile</a>
                                     </li>
                                     <li>
-                                        <a href=\"history.php\"><i class=\"glyphicon glyphicon-globe\"></i> History</a>
+                                        <a href=\"history.php\"><span class=\"glyphicon glyphicon-globe\" style=\"width: 18px;\"></span> History</a>
                                     </li>
                                     <li>
-                                        <a href=\"#\"><i class=\"fa fa-fw fa-gear\"></i> Settings</a>
+                                        <a href=\"#\"><span class=\"fa fa-fw fa-gear\"></span> Settings</a>
                                     </li>
                                     <li class=\"divider\"></li>
                                     <li>
-                                        <a href=\"#\" id=\"logout\"><i class=\"fa fa-fw fa-power-off\"></i> Log Out</a>
+                                        <a href=\"#\" id=\"logout\"><span class=\"fa fa-fw fa-power-off\"></span> Log Out</a>
                                     </li>
                                 </ul>";
                             }
@@ -190,16 +190,19 @@ span.psw {
                                         while($row = mysqli_fetch_array($result)){
                                             echo 
                                             "<tr>
-                                                <form method=\"post\">
                                                 <td>".$row['newword_id']."</td>
                                                 <td><input type='text' disabled value='".$row['newword']."' id=\"_".$row['newword_id']."\"/></td>
                                                 <td>".$row['username']."</td>
-                                                <td><button class=\"glyphicon glyphicon-ok\" style=\"margin: 0px 2px 0px 2px; padding:2px 5px 2px 5px;\"></button>
-                                                <button class=\"glyphicon glyphicon-trash\" style=\"margin: 0px 2px 0px 2px; padding:2px 5px 2px 5px;\"></button>
-                                                <button id=\"pencil\" class=\"glyphicon glyphicon-pencil\" style=\"margin: 0px 2px 0px 2px; padding:2px 5px 2px 5px;\" onclick=\"editMyWord(".$row['newword_id'].")\"></button></td></form>
+                                                <td><button class=\"glyphicon glyphicon-ok\" style=\"margin: 0px 2px 0px 2px; padding:2px 5px 2px 5px;\" onclick=\"okMyWord(".$row['newword_id'].")\"></button>
+                                                <button class=\"glyphicon glyphicon-trash\" style=\"margin: 0px 2px 0px 2px; padding:2px 5px 2px 5px;\" onclick=\"delMyWord(".$row['newword_id'].")\"></button>
+                                                <button id=\"pencil".$row['newword_id']."\" class=\"glyphicon glyphicon-pencil\" style=\"margin: 0px 2px 0px 2px; padding:2px 5px 2px 5px;\" onclick=\"editMyWord(".$row['newword_id'].")\"></button>
+                                                </td>
                                             </tr>";
-                                            }
-                                        ?>          
+                                        }
+                                    ?>
+                                    <div class="col-xs-12 col-lg-6 col-md-6">
+                                        <button class="submit" value="sent" id="senttext" style="border:1px solid black; margin-left:950px; float:left; margin-top:auto; font-size:18px; width:auto; color:black;">SUBMIT</button>
+                                    </div>          
                                 </tbody>
                             </table>
                         </div>
@@ -221,20 +224,66 @@ span.psw {
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    
     <script>
-         function editMyWord(param){
-            $("#_"+param).prop('disabled', false);
-         }
-
+    $(document).ready(function(){
+        $("#senttext").hide();
         $("#logout").click(function(){
-                //console.log('logout');
-                $.post("logout.php",{
-                  username: $('#username').val()
+            //console.log('logout');
+            $.post("logout.php",{
+                username: $('#username').val()
+            },
+            function(data,status){
+                window.location = 'index.php';
+            });
+        }); 
+    });
+    function editMyWord(param){
+        var name = "#_"+param;
+        $("#_"+param).prop('disabled',false);
+        //$("#pencil"+param).attr("class","glyphicon glyphicon-floppy-disk");
+        
+        $("#_"+param).keypress(function(){
+            //var updateWord = $("#_"+param).val();
+            $("#senttext").show();
+            $("#senttext").click(function(){
+                //var updateWord1 = $("#_"+param).val();
+                $.post("adminUpPage.php",{
+                    updateWord: $("#_"+param).val(),
+                    word_id: param
                 },
                 function(data,status){
-                  window.location = 'index.php';
+                    $obj = JSON.parse(data);
+                    console.log($obj);
+                    window.location.reload();
                 });
-            }); 
+            });
+        });
+    }
+
+    function delMyWord(id){
+        $.post("adminDelPage.php",{
+            word_id: id
+        },
+        function(data,status){
+            $obj = JSON.parse(data);
+            //console.log($obj);
+            window.location.reload();
+        });
+    }
+
+    function okMyWord(id){
+        $.post("adminAddPage.php",{
+            addWord: $("#_"+id).val(),
+            word_id: id
+        },
+        function(data,status){
+            $obj = JSON.parse(data);
+            console.log($obj);
+            window.location.reload();
+        });
+    }
+    
     </script>
 
 </body>

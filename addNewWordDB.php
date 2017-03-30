@@ -4,6 +4,7 @@
 	mysqli_set_charset($con, "utf8");
 	
 	$con = mysqli_connect("127.0.0.1:3306","root","");
+	mysqli_set_charset($con, "utf8");
 	mysqli_select_db($con,"database_web");
 	$result = mysqli_query($con,"SELECT max(newword_id) FROM newrudeword");
 	$row = mysqli_fetch_array($result);

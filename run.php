@@ -18,6 +18,7 @@
 	//echo '<hr/>';
 	$result = $segment->get_segment_array($text_to_segment);
 	$rude_word = $segment->get_rude_word($result);
+	//$newrudewordforadd = $segment->new_word_user_add();
 	//echo implode(' | ', $result);
 	//echo '<br/>';
 								
@@ -40,7 +41,7 @@
 	}
 	//echo '<br/><b>คำหยาบที่พบ:</b> ';
 	//echo implode(' | ', (array)$rude_word); 
-	$mArray  = array('full_text' => $result,'rudeword' => $rude_word, 'time' => round($time,4), 'wrongword' => $wrongword );
+	$mArray  = array('full_text' => $result,'rudeword' => $rude_word, 'time' => round($time,4), 'wrongword' => $wrongword);
 	echo json_encode($mArray,JSON_UNESCAPED_UNICODE );
 
 	if(!isset($_SESSION['user_id'])){
@@ -55,7 +56,7 @@
 
 	    $delDuplicate = "DELETE FROM history WHERE id NOT IN (
 	    SELECT * FROM (
-	    SELECT id from history  WHERE user_id=".$_SESSION['user_id']." group by inputText  ORDER by id desc) AS A  )";
-		mysqli_query($con,$delDuplicate);
+	    SELECT id from history WHERE user_id=".$_SESSION['user_id']." group by inputText  ORDER by id desc) AS A  )";
+		//mysqli_query($con,$delDuplicate);
 	}
 ?> 

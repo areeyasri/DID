@@ -164,7 +164,11 @@ display: flex;
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
-                <a class="navbar-brand hidden-xs" href="index.php">DETECTIVE INAPPROPRIATE WORDS</a>
+                <a class="navbar-brand hidden-xs" href="index.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
+                <select id="selectLang" style="margin-left: 535px; margin-top: 15px;">
+                    <option value="1" selected="selected">English (en)</option>
+                    <option value="2">Thai (th)</option>
+                </select>
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -264,7 +268,7 @@ display: flex;
                         <a href="forms.html"><i class="fglyphicon glyphicon-user"></i> MyAccount</a>
                     </li> -->
                     <li>
-                        <a href="aboutus.php"><i class="glyphicon glyphicon-cog"></i> About us</a>
+                        <a href="aboutus.php"><i class="glyphicon glyphicon-cog"></i> About DID</a>
                     </li>
                 </ul>
             </div>
@@ -280,7 +284,7 @@ display: flex;
         <div class="col-md-3 col-xs-12" style="margin-top: 10px;">
             <div id="custom-search-input" >
                 <div class="input-group col-md-12">
-                    <input type="text" class="form-control input-lg" style="height: 20px; padding: 0px;" placeholder="Buscar" />
+                    <input type="text" class="form-control input-lg" style="height: 20px; padding: 0px;" placeholder="Search" />
                     <span class="input-group-btn">
                         <button class="btn btn-info btn-lg" type="button">
                             <i class="glyphicon glyphicon-search"></i>
@@ -291,13 +295,28 @@ display: flex;
         </div>
     </div>
 
+<div id="id02" class="modal" style="background-color: rgba(0,0,0,0);">
+    <form class="modal-content animate" action="addNewWordDB.php" style="width:45%; margin-left:225px; margin-top:100px;" method="post" style="background-color: #fefefe; margin: 15% auto 15% auto; border: 1px solid #888; padding: 1%; width: 40%;">
 
+        <div class="imgcontainer" style="text-align: center; margin: 24px 0 12px 0; position: relative;">
+            <div style="width:100%;">
+                <h3>ADD NEW RUDE WORD</h3>
+                 <span onclick="document.getElementById('id02').style.display='none'" style="margin-top: -50px;margin-right:15px;width:50px; " class="close" title="Close Modal">&times;</span>                   
+            </div>      
+        </div>
+        <div class="container" style="padding: 16px; margin-left: 50px;">
+            <label><b>NEW RUDE WORD</b></label>
+            <input id="rudeword" name="rudeword" type="text" placeholder="Rude Word" required >
+            <button type="submit" style="background-color: #4CAF50; width: 90px; color: white; padding: 14px 20px; margin: 8px 0; border: none; cursor: pointer;">OK</button>
+        </div>  
+    </form>
+</div>
 
                     <form id="myform" method="post" action="index.php">
                         <div class="panel panel-default" style="background: none; padding: 15px; height: 650px;">
 
                         <div class="breadcrumb" style="background-color:#FAFAFA;">
-                            <a href="index.html"><i class="fa fa-file" style="margin-right: 5px;"></i>New Work</a>  
+                            <a href="index.php"><i class="fa fa-file" style="margin-right: 5px;"></i>New Work</a>  
                         </div>
                         <?php
                             $strSQL = "SELECT * FROM history WHERE user_id = '".$_SESSION['user_id']."' ";
@@ -325,6 +344,12 @@ display: flex;
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <script>
+    $("#selectLang").change(function(){
+        if($(this).val() == '1')
+            window.location = 'history.php';
+        else if($(this).val() == '2')
+            window.location = 'history_th.php';
+    });
         function myHistory(inputId) {
             $("#myid").val(inputId);
             $("#myform").submit();

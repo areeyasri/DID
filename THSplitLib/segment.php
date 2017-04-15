@@ -49,7 +49,7 @@ class Segment {
         else {
             $con1 = mysqli_connect("127.0.0.1:3306","root","");
             mysqli_select_db($con1,"database_web");
-            mysqli_set_charset($con1, "");
+            mysqli_set_charset($con1, "utf8");
         	$result_newword = mysqli_query($con1,"SELECT * FROM newrudeword where user_id = '".$_SESSION['user_id']."' ");
             //$result_newword = mysqli_query($con,"SELECT * FROM newrudeword where user_id = '2' ");
             while($row = mysqli_fetch_array($result_newword)) {
@@ -62,6 +62,7 @@ class Segment {
             else{
                 $this->array_rude_word = array_merge($this->_dictionary_array_rude,$this->_dictionary_array_new_rude);
             }
+            
         }
        
 		
@@ -102,21 +103,12 @@ class Segment {
 
     public function get_segment_array($input_string) {
         $this->_input_string = $input_string;
-
-
-        // ลบเครื่องหมายคำพูด, ตัวแบ่งประโยค //
         $this->_input_string = str_replace(array('\'', '‘', '’', '“', '”', '"', '-', '/','.', '(', ')', '{', '}', '...', '!', '..', '…', '', ',', ':', '|', '\\'), '', $this->_input_string);
-        // เปลี่ยน newline ให้กลายเป็น Space เพื่อที่ใช้สำหรับ Trim
         $this->_input_string = str_replace(array("\r", "\r\n", "\n"), ' ', $this->_input_string);
-
-
-        // กำจัดซ้ำ //
         $this->_input_string = $this->clear_duplicated($this->_input_string);
-
-        // แยกประโยคจากช่องว่าง (~เผื่อไว้สำหรับภาษาอังกฤษ) //
+        // Cut the space
         $this->_input_string_exploded = explode(' ', $this->_input_string);
-
-       // Reverse Array สำหรับการใช้ Dictionary แบบ Reverse //
+        // Reverse Array for use Reverse Dictionary
         foreach ($this->_input_string_exploded as $input_string_exploded_row) {
             $current_string_reverse_array = array_reverse($this->_unicode_obj->uni_strsplit(trim($input_string_exploded_row)));
             
@@ -126,41 +118,30 @@ class Segment {
                     $this->_segmented_result[] = trim($each_result);
             }
         }
-
-        // จัดการคำที่ตัดที่ยาวผิดปกติ (~อาจจะเป็นเพราะว่าพิมผิด) โดยการตัดตาม Dict แบบธรรมดา//
         $tmp_result = array();
         foreach ($this->_segmented_result as $result_row) {
+            // Find the wrong word from the word that has long of string length
             if (mb_strlen($result_row) > 10) {
-
                 $current_string_array = $this->_unicode_obj->uni_strsplit(trim($result_row));
-
                 $current_array_result = $this->_segment_by_dictionary($current_string_array);
-
                 foreach ($current_array_result as $current_result_row) {
-
                     $tmp_result[] = trim($current_result_row);
                 }
             } else {
                 $tmp_result[] = $result_row;
             }
-
         }
         $this->_segmented_result = $tmp_result;
         return $this->_segmented_result;
     }
 
     private function _segment_by_dictionary($input_array) {
-
         $result_array = array();
         $tmp_string = '';
-
         $pointer = 0;
         $length_of_string = count($input_array)-1;
-
         while ($pointer <= $length_of_string) {
-
             $tmp_string .= $input_array[$pointer];
-
             if (isset($this->_dictionary_array[crc32($tmp_string)])) { // ถ้าเจอใน Dict //
                 $dup_array = array();
                 $dup_array[] = array(
@@ -169,46 +150,30 @@ class Segment {
                 );
                 $count_more = 0;
                 $more_tmp = $tmp_string;
-                //echo $more_tmp.'find in dict <br/>';
-
-
+                
                 for ($i = $pointer + 1; $i <= $length_of_string; $i++) {
                     $more_tmp .= $input_array[$i];
-                    //echo $more_tmp.'<br/>';
-                    //echo $more_tmp.'<br/>';
                     if (isset($this->_dictionary_array[crc32($more_tmp)])) {
                         $dup_array[] = array(
                             'title' => $more_tmp,
                             'to_mark' => $i + 1,
                         );
-                        //print_r($dup_array);
                     }
-
                     $count_more++;
                 }
-
                 if (count($dup_array) > 0) {
                     $result_array[] = $dup_array[count($dup_array) - 1]['title'];
-
                     $pointer = $dup_array[count($dup_array) - 1]['to_mark'];
-
-                    //echo $to_mark;
-                } else {
-                    
-                }
-                //echo '-------------------<br/>';
+                } else {}
                 $dup_array = array();
                 $tmp_string = '';
                 continue;
             }
-
             $pointer++;
         }
-
-        if ($tmp_string != '') { //  ส่วนที่เหลือ ถ้าไม่เจอใน Dict
+        if ($tmp_string != '') {
             $result_array[] = $tmp_string;
         }
-
         if (count($result_array) == 0) {
             return array(implode($input_array));
         }
@@ -339,5 +304,79 @@ class Segment {
 
 
 	}
+
+    function edtidistance($input_array){
+        $result_similar = array();
+        $distance = array();
+        $shortest = -1;
+        $i = 0;
+        foreach($input_array as $pattern){
+            foreach ($this->array_rude_word as $word){
+                $lev = levenshtein($pattern, $word);
+                //echo $word." ".$pattern." ".$lev." ".$shortest."<br>";
+                // check for an exact match
+                if ($lev == 0) {
+
+                    // closest word is this one (exact match)
+                    $closest = $word;
+                    $result_similar[$i] = $word;
+                    $shortest = 0;
+
+                    // break out of the loop; we've found an exact match
+                    break;
+                }
+
+                // if this distance is less than the next found shortest
+                // distance, OR if a next shortest word has not yet been found
+                if ($lev <= $shortest || $shortest < 0) {
+                    // set the closest match, and shortest distance
+                    $closest  = $word;
+                    $result_similar[$i] = $word;
+                    $shortest = $lev;
+                }
+                
+            }
+            $i = $i+1;
+            $shortest = -1;
+        }
+        return $result_similar;
+    }    
+
+    function edtidistance_distance($input_array){
+        $distance = array();
+        $shortest = -1;
+        $i = 0;
+        foreach($input_array as $pattern){
+            foreach ($this->array_rude_word as $word){
+                $lev = levenshtein($pattern, $word);
+                //echo $word." ".$pattern." ".$lev." ".$shortest."<br>";
+                // check for an exact match
+                if ($lev == 0) {
+
+                    // closest word is this one (exact match)
+                    $closest = $word;
+                    $distance[$i] = 0;
+                    $shortest = 0;
+
+                    // break out of the loop; we've found an exact match
+                    break;
+                }
+
+                // if this distance is less than the next found shortest
+                // distance, OR if a next shortest word has not yet been found
+                if ($lev <= $shortest || $shortest < 0) {
+                    // set the closest match, and shortest distance
+                    $closest  = $word;
+                    $distance[$i] = $lev;
+                    $shortest = $lev;
+                }
+                
+            }
+            $i = $i+1;
+            $shortest = -1;
+        }
+        return $distance;
+    } 
+
 }
 ?>

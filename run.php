@@ -18,6 +18,8 @@
 	//echo '<hr/>';
 	$result = $segment->get_segment_array($text_to_segment);
 	$rude_word = $segment->get_rude_word($result);
+	$similar = $segment->edtidistance($result);
+	$distance = $segment->edtidistance_distance($result);
 	//$newrudewordforadd = $segment->new_word_user_add();
 	//echo implode(' | ', $result);
 	//echo '<br/>';
@@ -41,7 +43,7 @@
 	}
 	//echo '<br/><b>คำหยาบที่พบ:</b> ';
 	//echo implode(' | ', (array)$rude_word); 
-	$mArray  = array('full_text' => $result,'rudeword' => $rude_word, 'time' => round($time,4), 'wrongword' => $wrongword);
+	$mArray  = array('full_text' => $result,'rudeword' => $rude_word, 'time' => round($time,4), 'wrongword' => $wrongword, 'similar' => $similar, 'distance' => $distance);
 	echo json_encode($mArray,JSON_UNESCAPED_UNICODE );
 
 	if(!isset($_SESSION['user_id'])){

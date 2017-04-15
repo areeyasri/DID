@@ -105,23 +105,25 @@ span.psw {
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
             <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
-                <a class="navbar-brand hidden-xs" href="index_th.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
-                <select id="selectLang" style="margin-left: 555px; margin-top: 15px;">
+            <a class="navbar-brand hidden-xs" href="index_th.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
+                <!-- <select id="selectLang" style="margin-left: 540px; margin-top: 15px;">
                     <option value="1">English (en)</option>
                     <option value="2" selected="selected">Thai (th)</option>
-                </select>
+                </select> -->
+            
+            
             <div class="navbar-header">
+                <p style="font-size: 18px; margin-left: 660px; margin-top: 12px;"><a href="index.php">EN</a>/<a href="index_th.php">TH</a></p>
                 <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
             </div>
             <!-- Top Menu Items -->
-            
-            <ul class="nav navbar-right top-nav">
+
+            <ul class="nav navbar-right top-nav" style="margin-right: 10px;">
                 <li class="dropdown">
                 <?php
                     if(isset($_SESSION['username'])){
@@ -178,11 +180,13 @@ span.psw {
                     ?>
                 </li>
             </ul>
+            <i class="glyphicon glyphicon-question-sign"></i>
+
 
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
+                    <li>
                         <a href="index_th.php"><i class="glyphicon glyphicon-home"></i> หน้าหลัก</a>
                     </li>
                     <?php
@@ -190,14 +194,14 @@ span.psw {
                         } 
                         else{
                             echo "<li>  <a data-toggle=\"modal\" data-target=\"#myModal\" data-dismiss=\"modal\">
-                                        <i class=\"glyphicon glyphicon-lock\"></i> ล็อกอิน</a>
+                                        <i class=\"glyphicon glyphicon-lock\"></i> ลงชื่อเข้าใช้งาน</a>
                                  </li>";
                         }
-                        ?>
+                    ?>
                     <?php      
                     if(isset($_SESSION['username'])){
                             if($_SESSION["group"] == 'user'){
-                                echo "<li>
+                                echo "<li class='active'>
                             <a onclick=\"document.getElementById('id02').style.display='block'\"><i class=\"fa fa-fw fa-edit\"></i>เพิ่มคำศัพท์ใหม่ </a>
 
                         </li>"; 
@@ -212,7 +216,7 @@ span.psw {
                                 else {
                                         echo "<li>
                             <a data-toggle=\"modal\" data-target=\"#myModal\" data-dismiss=\"modal\">
-                                        <i class=\"glyphicon glyphicon-lock\"></i> เพิ่มคำศัพท์ใหม่</a>
+                                        <i class=\"fa fa-fw fa-edit\"></i> เพิ่มคำศัพท์ใหม่</a>
 
                         </li>";   
                                         }
@@ -297,7 +301,7 @@ span.psw {
 </div>
 
 <div id="id02" class="modal" style="background-color: rgba(0,0,0,0);">
-    <form class="modal-content animate" action="addNewWordDB.php" style="width:45%; margin-left:225px; margin-top:100px;" method="post" style="background-color: #fefefe; margin: 15% auto 15% auto; border: 1px solid #888; padding: 1%; width: 40%;">
+    <form class="modal-content animate" action="addNewWordDB.php" style="width:45%; margin-left:225px; margin-top:50px;" method="post" style="background-color: #fefefe; margin: 15% auto 15% auto; border: 1px solid #888; padding: 1%; width: 40%;">
         <div class="imgcontainer" style="text-align: center; margin: 24px 0 12px 0; position: relative;">
             <div style="display:inline-block; width:100%; height: 60px;">
                 <h3>เพิ่มคำศัพท์ใหม่</h3>

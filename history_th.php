@@ -165,11 +165,13 @@ display: flex;
             <!-- Brand and toggle get grouped for better mobile display -->
             <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
                 <a class="navbar-brand hidden-xs" href="index_th.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
-                <select id="selectLang" style="margin-left: 555px; margin-top: 15px;">
+                <!-- <select id="selectLang" style="margin-left: 535px; margin-top: 15px;">
                     <option value="1">English (en)</option>
                     <option value="2" selected="selected">Thai (th)</option>
-                </select>
+                </select> -->
+
             <div class="navbar-header">
+                <p style="font-size: 18px; margin-left: 710px; margin-top: 12px;"><a href="history.php">EN</a>/<a href="history_th.php">TH</a></p>
                 <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>

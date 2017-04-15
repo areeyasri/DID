@@ -165,11 +165,12 @@ display: flex;
             <!-- Brand and toggle get grouped for better mobile display -->
             <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
                 <a class="navbar-brand hidden-xs" href="index.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
-                <select id="selectLang" style="margin-left: 535px; margin-top: 15px;">
+                <!-- <select id="selectLang" style="margin-left: 535px; margin-top: 15px;">
                     <option value="1" selected="selected">English (en)</option>
                     <option value="2">Thai (th)</option>
-                </select>
+                </select> -->
             <div class="navbar-header">
+                <p style="font-size: 18px; margin-left: 710px; margin-top: 12px;"><a href="history.php">EN</a>/<a href="history_th.php">TH</a></p>
                 <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -229,6 +230,7 @@ display: flex;
                             }
                             
                         }else {
+                           
                             }
                         ?>
                 </li>
@@ -281,18 +283,7 @@ display: flex;
    <div class= "col-md-2 col-xs-12">
           <i class="glyphicon glyphicon-globe fa-2x" ><div style=" margin-left:10px; font-size:36px; display:inline-block;">History</div></i>
     </div>
-        <div class="col-md-3 col-xs-12" style="margin-top: 10px;">
-            <div id="custom-search-input" >
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control input-lg" style="height: 20px; padding: 0px;" placeholder="Search" />
-                    <span class="input-group-btn">
-                        <button class="btn btn-info btn-lg" type="button">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
 <div id="id02" class="modal" style="background-color: rgba(0,0,0,0);">

@@ -312,8 +312,24 @@ span.psw {
        
 
                 <!-- Page Heading -->
-                 <div id="page-wrapper" style="height: 750px;">
+                <div id="page-wrapper" style="height: 750px;">
+                    <div>
+                        <h1>About Us</h1>
+                        <br>
+                    </div>
+                    <div>
+                        <img src="logo.png" style="margin-left:450px; width: 440px; height: 220px;" ><br>
+                        <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;We created this website for filtering inappropriate words in Thai language for parents who want to protect their children from recognition in appropriate words to avoid the imitated behavior of their children. Moreover, the website that didn’t have inappropriate words filtering feature yet can apply D.I.D program to censor the inappropriate words in some contents in their website such as in comments or posts.</h4>
 
+                        <br><br>
+
+                        <p>Contact us: areeya.srp@student.mahidol.ac.th, nichaboon.rat@student.mahidol.ac.th, atcha.sri@student.mahidol.ac.th</p>
+                        <br>
+
+                    </div>
+                   
+
+                    
                    
                 </div>
                 <!-- /.row -->

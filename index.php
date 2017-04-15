@@ -106,11 +106,12 @@ span.psw {
             <!-- Brand and toggle get grouped for better mobile display -->
             <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
                 <a class="navbar-brand hidden-xs" href="index.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
-                <select id="selectLang" style="margin-left: 555px; margin-top: 15px;">
+                <!-- <select id="selectLang" style="margin-left: 540px; margin-top: 15px;">
                     <option value="1" selected="selected">English (en)</option>
                     <option value="2">Thai (th)</option>
-                </select>
+                </select> -->
             <div class="navbar-header">
+                <p style="font-size: 18px; margin-left: 710px; margin-top: 12px;"><a href="index.php">EN</a>/<a href="index_th.php">TH</a></p>
                 <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -132,7 +133,7 @@ span.psw {
                     }
                     else{
                         echo "<a data-toggle=\"modal\" data-target=\"#myModal\" data-dismiss=\"modal\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><i class=\"fa fa-user\"></i>";
-                        echo " User";
+                        echo "Sign in";
                         echo "<b class=\"caret\"></b></a>";
                     }
                 ?> 
@@ -353,7 +354,7 @@ span.psw {
                                     <div class="col-xs-12 col-md-6 col-lg-6" id="box" style="float:right; min-height:343px; border: solid gray 1px; background-color:#E6E6E6; padding:5px;">
                                         <p id="one" style="font-weight: bold; font-size: 16px;">Context:  </p><p id="full"></p></br>
                                         <p id="two">Inappropriate:  </p><p id="rude"></p></br>
-                                        <!-- <p id="three">คำผิด:  </p><p id="wrong"></p><br>-->
+                                        <p id="three">คำที่อาจจะเป็นคำหยาบ:  </p><p id="similar"></p><br>
                                         <p id="four">Time:  </p> <p id="time"></p><br>
                                         <p id="five">Percentage of inappropriate words in the document: </p>
                                         <div class="progress">
@@ -396,7 +397,7 @@ span.psw {
         $(document).ready(function(){
             $("#one").hide();
             $("#two").hide();
-            //$("#three").hide();
+            $("#three").hide();
             $("#four").hide();
             $("#five").hide();
             $(".progress").hide();
@@ -433,21 +434,17 @@ span.psw {
             });
 
             $("#senttext").click(function(){
-                //alert("dsd");
-                
                 $.post("run.php",
                 {
                   text_to_segment: $('#text_to_segment').val()
                 },
                 function(data,status){
-                   console.log(data);
+                   //console.log(data);
                    $obj = JSON.parse(data);
-                   //console.log($obj);
                    var tmp = "";
                    var found = 0;
                    var count = 0;
                    var percentage = 0;
-                   //console.log($obj.full_text);
                    var allText = $obj.full_text.length;
                    for(var i=0; i<$obj.full_text.length; i++){
                       for(var j = 0; j<$obj.rudeword.length; j++) {
@@ -458,7 +455,7 @@ span.psw {
                             usedRude: $obj.rudeword[j]
                           },
                           function(data,status){
-                            console.log(data);
+                            //console.log(data);
                             $obj = JSON.parse(data);
 
                           });
@@ -471,13 +468,10 @@ span.psw {
                       }
                       else{
                         tmp = tmp + "|" + $obj.full_text[i];
-                        //console.log($obj.full_text[i]);
                       }
                    }
                    percentage = ((count/allText)*(100));
-                   //console.log(allText);
-                   //console.log(count);
-                   console.log(percentage);
+                   //console.log(percentage);
                    if(percentage<26){
                     $("#barPro").attr("class","progress-bar progress-bar-success");
                    }
@@ -493,13 +487,26 @@ span.psw {
                    $("#barPro").css("width",percentage+"%");
                    $(".progress").show();
                    $("#five").show();
-                   $("#textPercen").text(percentage+"%");
+                   $("#textPercen").text(percentage.toFixed(2)+"%");
                    $("#one").show();
                    $("#full").text(tmp);
                    $("#two").show();
                    $("#rude").text($obj.rudeword);
-                   //$("#three").show();
-                   //$("#wrong").text($obj.wrongword);
+                   var word_similar = new Array();
+                   var z = 0;
+                   for (var i=0; i<$obj.similar.length; i++){
+                     //console.log($obj.similar[i] + " " +$obj.similar[i].length + " "+$obj.distance[i] );
+                        if($obj.similar[i].length<4 && $obj.distance[i] <= 1 && $obj.distance[i] >0){
+                            word_similar[z++] = $obj.full_text[i] +" ("+ $obj.similar[i] +")";
+                        }
+                        else if($obj.similar[i].length > 3 && $obj.distance[i] <=2 && $obj.distance[i] >0){
+                            word_similar[z++] = $obj.full_text[i] +" ("+ $obj.similar[i] +")";
+                        }
+                        else{}
+                   }
+                   $("#three").show();
+                   //alert(word_similar.join(','));
+                   $("#similar").text(word_similar.join(','));
                    $("#four").show();
                    $("#time").text($obj.time);
                 });

@@ -99,7 +99,7 @@ span.psw {
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <img src = "logo.png" style="height:40px; width:40px; margin:5px 0px 5px 10px; float:left; ">
-        <a class="navbar-brand hidden-xs" href="index.php">DETECTIVE INAPPROPRIATE WORDS</a>
+        <a class="navbar-brand hidden-xs" href="index.php">DETECTION OF INAPPROPRIATE DOCUMENT</a>
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" style="width:inherit;" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -160,7 +160,7 @@ span.psw {
                         <a href="tables.php"><i class="fa fa-fw fa-edit"></i>Add a new word </a>
                     </li>
                     <li>
-                        <a href="aboutus.php"><i class="glyphicon glyphicon-cog"></i> About us</a>
+                        <a href="aboutus.php"><i class="glyphicon glyphicon-cog"></i> About DID</a>
                     </li>
                 </ul>
             </div>
